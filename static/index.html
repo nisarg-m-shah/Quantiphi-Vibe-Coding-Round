@@ -3,19 +3,22 @@
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
   <title>AI Chat Assistant</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=2">
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/dompurify/dist/purify.min.js"></script>
 </head>
 <body>
-  <aside>
+  <aside id="sidebar">
     <button id="new">+ New chat</button>
+    <div class="label">Recent</div>
     <div id="history"></div>
   </aside>
+  <div id="scrim"></div>
   <main>
     <header>
+      <button id="menu" aria-label="Menu">☰</button>
       <h1>AI Chat Assistant</h1>
-      <label>Tone
+      <label class="tone">Tone
         <select id="tone">
           <option value="professional">Professional</option>
           <option value="casual">Casual</option>
@@ -24,12 +27,21 @@
       </label>
     </header>
     <div id="messages"></div>
-    <div id="actions"><button id="regen" hidden>Regenerate response</button></div>
+    <div id="actions"><button id="regen" hidden>↻ Regenerate response</button></div>
     <form id="form">
-      <textarea id="input" rows="2" maxlength="4000" placeholder="Type a message..."></textarea>
-      <button id="send" type="submit">Send</button>
+      <div class="composer">
+        <textarea id="input" rows="1" maxlength="4000" placeholder="Message the assistant..."></textarea>
+        <button id="send" type="submit" aria-label="Send">➤</button>
+      </div>
     </form>
   </main>
   <script src="app.js"></script>
+  <script>
+    // Mobile sidebar toggle (presentation only)
+    const sb = document.getElementById('sidebar');
+    document.getElementById('menu').onclick = () => sb.classList.toggle('open');
+    document.getElementById('scrim').onclick = () => sb.classList.remove('open');
+    sb.addEventListener('click', (e) => { if (e.target.closest('.item')) sb.classList.remove('open'); });
+  </script>
 </body>
 </html>

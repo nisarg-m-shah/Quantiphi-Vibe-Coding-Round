@@ -50,7 +50,15 @@ async function openConv(id) {
 // Reads the SSE stream and fills the bubble progressively. Returns true on success.
 async function streamInto(url, body, bubble) {
   setBusy(true);
-  let text = '';
+  let pending = '', shown = '';
+  const timer = setInterval(() => {
+    if (!pending) return;
+    const n = Math.max(1, Math.ceil(pending.length / 60)); // 1 char per tick, speeds up only on a big backlog
+    shown += pending.slice(0, n);
+    pending = pending.slice(n);
+    setBubble(bubble, 'assistant', shown);
+    msgs.scrollTop = msgs.scrollHeight;
+  }, 18);
   try {
     const res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
     if (!res.ok) {
@@ -70,19 +78,18 @@ async function streamInto(url, body, bubble) {
         if (!p.startsWith('data: ')) continue;
         const ev = JSON.parse(p.slice(6));
         if (ev.error) throw new Error(ev.error);
-        if (ev.token) {
-          text += ev.token;
-          setBubble(bubble, 'assistant', text);
-          msgs.scrollTop = msgs.scrollHeight;
-        }
+        if (ev.token) pending += ev.token; // queue it; the timer types it out
       }
     }
+    while (pending) await new Promise((r) => setTimeout(r, 30)); // let the typing finish
     return true;
   } catch (e) {
+    pending = '';
     bubble.textContent = '⚠ ' + e.message;
     bubble.classList.add('error');
     return false;
   } finally {
+    clearInterval(timer);
     setBusy(false);
   }
 }
