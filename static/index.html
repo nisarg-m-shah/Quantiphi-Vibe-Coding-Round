@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>AI Chat Assistant</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/dompurify/dist/purify.min.js"></script>
+</head>
+<body>
+  <aside>
+    <button id="new">+ New chat</button>
+    <div id="history"></div>
+  </aside>
+  <main>
+    <header>
+      <h1>AI Chat Assistant</h1>
+      <label>Tone
+        <select id="tone">
+          <option value="professional">Professional</option>
+          <option value="casual">Casual</option>
+          <option value="concise">Concise</option>
+        </select>
+      </label>
+    </header>
+    <div id="messages"></div>
+    <div id="actions"><button id="regen" hidden>Regenerate response</button></div>
+    <form id="form">
+      <textarea id="input" rows="2" maxlength="4000" placeholder="Type a message..."></textarea>
+      <button id="send" type="submit">Send</button>
+    </form>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>
